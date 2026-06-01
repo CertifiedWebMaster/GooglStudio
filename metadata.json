@@ -1,0 +1,6 @@
+{
+  "name": "Repo Deployer",
+  "description": "Analyze, configure, and simulate high-fidelity deployments of GitHub repositories with real-time build logging, dependency mapping, and interactive previews powered by Gemini AI.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
