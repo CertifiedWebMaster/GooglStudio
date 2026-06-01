@@ -2,12 +2,16 @@ package com.example.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val DevBackground = Color(0xFF09090B)
-val DevSurface = Color(0xFF18181B)
-val DevSurfaceVariant = Color(0xFF27272A)
-val DevPrimary = Color(0xFF00E5FF) // Cyan
-val DevSecondary = Color(0xFF10B981) // Green success
-val DevError = Color(0xFFEF4444) // Red error
-val DevText = Color(0xFFFAFAFA)
-val DevTextMuted = Color(0xFFA1A1AA)
+val ElegantBackground = Color(0xFF1C1B1F)
+val ElegantSurface = Color(0xFF2B2930)
+val ElegantSurfaceVariant = Color(0xFF31111D)
+val ElegantPrimary = Color(0xFFD0BCFF)
+val ElegantOnPrimary = Color(0xFF381E72)
+val ElegantSecondary = Color(0xFF1D3557)
+val ElegantOnSecondary = Color(0xFFA8DADC)
+val ElegantError = Color(0xFFF2B8B5)
+val ElegantText = Color(0xFFE6E1E5)
+val ElegantTextMuted = Color(0xFFCAC4D0)
+val ElegantTextMutedAlt = Color(0xFF938F99)
+val ElegantOutline = Color(0xFF49454F)
 

@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -22,6 +23,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.db.Deployment
 import com.example.ui.theme.MyApplicationTheme
@@ -66,21 +68,42 @@ fun DeployerScreen(modifier: Modifier = Modifier, viewModel: DeployViewModel) {
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        Text(
-            text = "Deployment Manager",
-            style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
-            color = MaterialTheme.colorScheme.onBackground
-        )
-        Text(
-            text = "Configure and rollback GitHub deployments.",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(bottom = 24.dp)
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(top = 24.dp, bottom = 16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column {
+                Text(
+                    text = "DEVELOPER CONSOLE",
+                    style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Medium, letterSpacing = 1.sp),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Text(
+                    text = "DeployFlow",
+                    style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.SemiBold, letterSpacing = (-0.5).sp),
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(20.dp))
+                    .background(MaterialTheme.colorScheme.outline.copy(alpha = 0.5f), RoundedCornerShape(20.dp)),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "JD",
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold)
+                )
+            }
+        }
 
         Surface(
-            shape = RoundedCornerShape(12.dp),
+            shape = RoundedCornerShape(16.dp),
             color = MaterialTheme.colorScheme.surface,
+            border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
             modifier = Modifier.fillMaxWidth()
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
@@ -115,12 +138,13 @@ fun DeployerScreen(modifier: Modifier = Modifier, viewModel: DeployViewModel) {
                 Button(
                     onClick = { viewModel.deployRepo(repoUrl, branch) },
                     enabled = !isDeploying && repoUrl.isNotBlank(),
-                    modifier = Modifier.fillMaxWidth().height(48.dp),
-                    shape = RoundedCornerShape(8.dp),
+                    modifier = Modifier.fillMaxWidth().height(56.dp),
+                    shape = RoundedCornerShape(16.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primary,
                         contentColor = MaterialTheme.colorScheme.onPrimary
-                    )
+                    ),
+                    elevation = ButtonDefaults.buttonElevation(defaultElevation = 6.dp)
                 ) {
                     if (isDeploying) {
                         CircularProgressIndicator(
@@ -129,7 +153,7 @@ fun DeployerScreen(modifier: Modifier = Modifier, viewModel: DeployViewModel) {
                             strokeWidth = 2.dp
                         )
                     } else {
-                        Text("Deploy Repository", fontWeight = FontWeight.Bold)
+                        Text("New Deployment", fontWeight = FontWeight.Bold, fontSize = 16.sp)
                     }
                 }
             }
@@ -137,10 +161,10 @@ fun DeployerScreen(modifier: Modifier = Modifier, viewModel: DeployViewModel) {
 
         Spacer(modifier = Modifier.height(24.dp))
         Text(
-            text = "Deployment History",
-            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
-            color = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier.padding(bottom = 8.dp)
+            text = "Active Deployments",
+            style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Medium),
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(bottom = 12.dp, start = 4.dp)
         )
         
         if (deployments.isEmpty()) {
@@ -184,13 +208,10 @@ fun DeploymentCard(
     val dateString = formatter.format(Date(deployment.timestamp))
     
     Surface(
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(16.dp),
         color = MaterialTheme.colorScheme.surface,
-        modifier = Modifier.fillMaxWidth().border(
-            width = if (isCurrentLive) 1.dp else 0.dp,
-            color = if (isCurrentLive) MaterialTheme.colorScheme.secondary else androidx.compose.ui.graphics.Color.Transparent,
-            shape = RoundedCornerShape(12.dp)
-        )
+        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+        modifier = Modifier.fillMaxWidth()
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(
@@ -201,38 +222,48 @@ fun DeploymentCard(
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = deployment.repoUrl.substringAfterLast("/").ifEmpty { deployment.repoUrl },
-                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Medium),
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = "Branch: ${deployment.branch} • Commit: ${deployment.commitHash}",
                         style = MaterialTheme.typography.bodySmall.copy(fontFamily = FontFamily.Monospace),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = MaterialTheme.colorScheme.outlineVariant
                     )
                 }
                 if (isCurrentLive) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
+                    Box(
                         modifier = Modifier
                             .clip(RoundedCornerShape(16.dp))
-                            .background(MaterialTheme.colorScheme.secondary.copy(alpha = 0.2f))
+                            .background(MaterialTheme.colorScheme.secondary)
                             .padding(horizontal = 8.dp, vertical = 4.dp)
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.CheckCircle,
-                            contentDescription = "Live",
-                            tint = MaterialTheme.colorScheme.secondary,
-                            modifier = Modifier.size(12.dp)
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
                         Text(
                             text = "LIVE",
-                            style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
-                            color = MaterialTheme.colorScheme.secondary
+                            style = MaterialTheme.typography.labelSmall.copy(
+                                fontWeight = FontWeight.Bold,
+                                letterSpacing = 2.sp,
+                                fontSize = 10.sp
+                            ),
+                            color = MaterialTheme.colorScheme.onSecondary
                         )
                     }
                 }
+            }
+            Spacer(modifier = Modifier.height(12.dp))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(6.dp)
+                    .background(MaterialTheme.colorScheme.outline, RoundedCornerShape(3.dp))
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(6.dp)
+                        .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(3.dp))
+                )
             }
             Spacer(modifier = Modifier.height(12.dp))
             Row(
@@ -241,26 +272,21 @@ fun DeploymentCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "$dateString • ${deployment.status}",
+                    text = "Deployed $dateString",
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 
                 if (!isCurrentLive && deployment.status.startsWith("SUCCESS")) {
-                    OutlinedButton(
-                        onClick = onRollback,
-                        enabled = !isDeploying,
-                        modifier = Modifier.height(32.dp),
-                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 0.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Refresh,
-                            contentDescription = "Rollback",
-                            modifier = Modifier.size(16.dp)
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text("Rollback", style = MaterialTheme.typography.labelMedium)
-                    }
+                    Text(
+                        text = "ROLLBACK",
+                        style = MaterialTheme.typography.labelMedium.copy(
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.error,
+                            letterSpacing = 1.sp
+                        ),
+                        modifier = Modifier.padding(end = 4.dp).clickable(enabled = !isDeploying) { onRollback() }
+                    )
                 }
             }
         }
